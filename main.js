@@ -26,7 +26,8 @@ function submitIssue(e) {
 const closeIssue = (id) => {
   const idString = id + "";
   const issues = JSON.parse(localStorage.getItem("issues"));
-  const currentIssue = issues.find((issue) => issue.id === idString);
+  // const currentIssue = issues.find((issue) => issue.id === idString);
+  const currentIssue = issues.find((issue) => issue.id === id.toString());
   currentIssue.status = "Closed";
   localStorage.setItem("issues", JSON.stringify(issues));
   fetchIssues();
@@ -35,15 +36,17 @@ const closeIssue = (id) => {
 const deleteIssue = (id) => {
   const idString = id + "";
   const issues = JSON.parse(localStorage.getItem("issues"));
-  const remainingIssues = issues.filter((issues) => issues.id !== idString);
+  // const remainingIssues = issues.filter((issues) => issues.id !== idString);
+  const remainingIssues = issues.filter((issues) => Number(issues.id) !== id);
   localStorage.setItem("issues", JSON.stringify(remainingIssues));
+  fetchIssues();
 };
 
 const fetchIssues = () => {
   const issues = JSON.parse(localStorage.getItem("issues"));
   const issuesList = document.getElementById("issuesList");
   issuesList.innerHTML = "";
-  for (let i = 0; i < issues.length; i++) {
+  for (let i = 0; i < issues?.length; i++) {
     const { id, description, severity, assignedTo, status } = issues[i];
 
     issuesList.innerHTML += `<div class="well">
@@ -55,7 +58,7 @@ const fetchIssues = () => {
                               <p><span class="glyphicon glyphicon-time"></span> ${severity}</p>
                               <p><span class="glyphicon glyphicon-user"></span> ${assignedTo}</p>
                               <a onclick="closeIssue(${id})" class="btn btn-warning">Close</a>
-                              <a href='index.html' onclick="deleteIssue(${id})" class="btn btn-danger">Delete</a>
+                              <a onclick="deleteIssue(${id})" class="btn btn-danger">Delete</a>
                               </div>`;
   }
 };
